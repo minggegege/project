@@ -1,0 +1,16 @@
+config.yml
+tmp/*
+.idea
+*.log
+/*.log*
+authorized_keys.lock
+coverage/
+.gitlab_shell_secret
+.bundle
+tags
+.bundle/
+custom_hooks
+hooks/*.d
+/go_build
+/bin/gitaly-upload-pack
+/bin/gitaly-receive-pack
