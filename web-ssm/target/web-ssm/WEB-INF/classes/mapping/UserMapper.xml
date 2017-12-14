@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.heitian.ssm.dao.UserDao">
+
+    <!--<resultMap id="topic" type="com.heitian.ssm.model.Topic"></resultMap>
+    <resultMap id="UserBaseMap" type="com.heitian.ssm.model.User"></resultMap>-->
+
+    <select id="select" resultType="java.lang.Integer">
+        SELECT count(*) as count FROM topic
+    </select>
+
+    <select id="cha" resultType="java.util.HashMap">
+        SELECT * FROM topic
+        <where>
+            <!--<if test="name!=null and name!=''">
+                AND topicName LIKE #{%name%}
+            </if>-->
+            <if test="name!=null and name!=''">
+                AND topicName = #{name}
+            </if>
+            <!--<if test="name!=null and name!=''">
+                AND topicType = #{name%}
+            </if>
+            <if test="name!=null and name!=''">
+                AND topicInfo = #{name%}
+            </if>-->
+        </where>
+        limit #{bean.startNum},#{bean.endNum}
+    </select>
+
+    <select id="selectAllUser" resultType="com.heitian.ssm.model.User">
+
+        SELECT * FROM users
+    </select>
+
+    <select id="getUser" resultType="com.heitian.ssm.model.User">
+        SELECT * FROM users
+    </select>
+</mapper>

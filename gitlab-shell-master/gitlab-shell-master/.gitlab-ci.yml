@@ -1,0 +1,73 @@
+image: "ruby:2.3"
+
+before_script:
+  - export PATH=~/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/go/bin
+  - apt update
+  - apt install rsync -y
+  - gem install --bindir /usr/local/bin bundler
+  - cp config.yml.example config.yml
+  - bundle install
+
+rspec:
+  script:
+    - bundle exec rspec spec
+  tags:
+    - ruby
+  except:
+    - tags
+
+rubocop:
+  script: 
+    - bundle exec rubocop
+  tags:
+    - ruby
+  except:
+    - tags
+
+#ruby 2.2
+rspec:ruby2.2:
+  image: ruby:2.2
+  script:
+    - bundle exec rspec spec
+  tags:
+    - ruby
+  except:
+    - tags
+
+#ruby 2.1
+rspec:ruby2.1:
+  image: ruby:2.1
+  script:
+    - bundle exec rspec spec
+  tags:
+    - ruby
+  except:
+    - tags
+
+.go: &go_definition
+  before_script:
+  - apt-get update -qq && apt-get install -y ruby
+  - ruby -v
+  script:
+    - go version
+    - which go
+    - bin/compile
+    - support/go-test
+    - support/go-format check
+
+go:1.8:
+  <<: *go_definition
+  image: golang:1.8
+
+codeclimate:
+  before_script: []
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay
+  services:
+    - docker:dind
+  script:
+    - docker pull codeclimate/codeclimate
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > codeclimate.json
+  artifacts:
+    paths: [codeclimate.json]

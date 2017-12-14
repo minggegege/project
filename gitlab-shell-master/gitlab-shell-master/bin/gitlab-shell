@@ -1,0 +1,24 @@
+#!/usr/bin/env ruby
+
+unless ENV['SSH_CONNECTION']
+  puts "Only ssh allowed"
+  exit
+end
+
+key_id = /key-[0-9]+/.match(ARGV.join).to_s
+original_cmd = ENV.delete('SSH_ORIGINAL_COMMAND')
+
+require_relative '../lib/gitlab_init'
+
+#
+#
+# GitLab shell, invoked from ~/.ssh/authorized_keys
+#
+#
+require File.join(ROOT_PATH, 'lib', 'gitlab_shell')
+
+if GitlabShell.new(key_id).exec(original_cmd)
+  exit 0
+else
+  exit 1
+end
